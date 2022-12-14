@@ -7,6 +7,7 @@ project(cpp_assignment LANGUAGES CXX)
 add_executable(a.out
     src/main.cpp
     src/tester.cpp
+    src/SensorDataEntry.cpp
 )
 
 target_compile_features(a.out PUBLIC cxx_std_11)
