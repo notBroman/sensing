@@ -1,5 +1,6 @@
 #include "tester.hpp"
 #include "SensorDataEntry.hpp"
+#include "Sensor.hpp"
 
 using namespace std;
 
@@ -45,5 +46,39 @@ void test_SDE(){
         test_SDE.checkAndSetSensorID(i);
         test_SDE.printEntry();
         cout << endl;
+    }
+}
+
+void test_sensor(){
+    static const int TOT_SENSORS = 5;
+    Sensor test_sensor[TOT_SENSORS];
+    SensDataEntry result;
+    // this line assumes the base class SensDataEntry form Part 1; you may change it to the derived class, if needed.
+    bool check;
+    int Tval1, Tval2, Tval3; float Rval;
+    // TO DO: set inital T_info as the earliest value:
+    Tval1 = 2021; Tval2 =1; Tval3 =1;
+    // TO DO: set inital R_info somewhere in the middle of the range:
+    Rval =43.98;
+    for (int sensor_i = 0; sensor_i < TOT_SENSORS; sensor_i++){
+        cout << " ------ Testing Sensor " << (sensor_i+1) << " ------" << endl;
+        check = test_sensor[sensor_i].setInitialMeasurement(Tval1, Tval2, Tval3, Rval);
+        if (check){
+            int tot_test = 50;
+            for (int i = 0; i < tot_test; i++){
+                cout << "Testing Sensor " << (sensor_i + 1) << ": Measurement simulation # " << i << endl;
+                check = test_sensor[sensor_i].simulateMeasurement(result);
+                if (check){
+                    cout << "Measurement Result:" << endl;
+                    result.printEntry();
+                    cout << endl;
+                }else{
+                    cout << "Measurement simulation failed" << endl;
+                    break;
+                }
+            }
+        }else
+            cout << "Setting starting measure failed" << endl;
+        cout << " ------------- Done ----------------" << endl << endl;
     }
 }

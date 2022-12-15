@@ -1,6 +1,5 @@
 #include "SensorDataEntry.hpp"
 
-std::vector<SensDataEntry*> SensDataEntry::instances;
 
 SensDataEntry::SensDataEntry(){
     temporal_info.fill(std::nan("-1"));
@@ -8,7 +7,6 @@ SensDataEntry::SensDataEntry(){
     reading_init = false;
     temporal_init = false;
     id_init = false;
-    SensDataEntry::instances.push_back(this);
 }
 
 SensDataEntry::~SensDataEntry(){
@@ -21,8 +19,6 @@ SensDataEntry::SensDataEntry(const SensDataEntry& other){
         this->temporal_init = true;
         this->reading_init = true;
         this->id_init = true;
-
-        SensDataEntry::instances.push_back(this);
     }
 }
 
@@ -126,12 +122,6 @@ bool SensDataEntry::checkAndSetSensorID(int IDval){
     if(IDval < 0){
         std::cout << "Sensor ID must be positive" << std::endl;
         return false;
-    }
-    for(SensDataEntry* i : instances){
-        if(i->sensor_id == IDval){
-            std::cout << "Sensor ID not unique" << std::endl;
-            return false;
-        }
     }
     sensor_id = IDval;
     id_init = true;

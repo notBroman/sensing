@@ -8,6 +8,8 @@ add_executable(a.out
     src/main.cpp
     src/tester.cpp
     src/SensorDataEntry.cpp
+    src/Sensor.cpp
+    src/newEntry.cpp
 )
 
 target_compile_features(a.out PUBLIC cxx_std_11)

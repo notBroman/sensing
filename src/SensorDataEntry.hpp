@@ -20,8 +20,6 @@ protected:
 
     int sensor_id;
 
-    static std::vector<SensDataEntry*> instances;
-
 
 public:
     SensDataEntry();
