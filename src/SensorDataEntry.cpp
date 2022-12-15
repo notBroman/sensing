@@ -73,7 +73,13 @@ bool SensDataEntry::checkTemporalInfo(int Tval1, int Tval2, int Tval3){
 }
 
 bool SensDataEntry::setRandomTemporalInfo(){
-    return false;
+    int YYYY = std::trunc(RandomValInBounds(2021,2023.1));
+    int MM = std::trunc(RandomValInBounds(1,12.1));
+    int DD = std::trunc(RandomValInBounds(1,31.1));
+
+
+
+    return checkAndSetTemporalInfo(YYYY, MM, DD);
 }
 
 bool SensDataEntry::checkReadingInfo(float Rval){
@@ -124,7 +130,7 @@ bool SensDataEntry::getSDE(int& Tval1, int& Tval2, int& Tval3, float& Rval, int&
     if(this->isDataEntrySet()){
         Tval1 = temporal_info[0];
         Tval2 = temporal_info[1];
-        Tval3 = temporal_info[3];
+        Tval3 = temporal_info[2];
         Rval = reading_info;
         IDval = sensor_id;
         return true;
@@ -134,15 +140,22 @@ bool SensDataEntry::getSDE(int& Tval1, int& Tval2, int& Tval3, float& Rval, int&
 }
 
 float SensDataEntry::getSensData() const {
-    return 0.0;
+    return reading_info;
 }
 
 std::array<int, 3> SensDataEntry::getTemporalData() const {
-    return {-1,-1,-1};
+    return temporal_info;
 }
 
 void SensDataEntry::printEntry() const {
     // print stuff
+    if(isDataEntrySet()){
+        std::cout << "Temporal Data: " << temporal_info[0] << "-" << temporal_info[1] << "-" << temporal_info[2] << std::endl;
+        std::cout << "Reading Data: " << reading_info << std::endl;
+        std::cout << "Sensor ID: " << sensor_id << std::endl;
+    } else{
+        std::cout << "entry not set" << std::endl;
+    }
 }
 /*
 SensDataEntry& SensDataEntry::operator= (const SensDataEntry& other){
@@ -150,9 +163,11 @@ SensDataEntry& SensDataEntry::operator= (const SensDataEntry& other){
 }
 */
 float SensDataEntry::RandomValInBounds(float min_val, float max_val){
+    min_val *= 100;
+    max_val *= 100;
     std::random_device rand_dev;
     std::mt19937 generator(rand_dev());
     std::uniform_int_distribution<float> distribution(min_val, max_val);
-    return distribution(generator);
+    return distribution(generator)/100;
 }
 
