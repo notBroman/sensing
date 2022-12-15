@@ -1,20 +1,29 @@
 #include "SensorDataEntry.hpp"
 
+std::vector<SensDataEntry*> SensDataEntry::instances;
+
 SensDataEntry::SensDataEntry(){
     temporal_info.fill(std::nan("-1"));
     reading_info = std::nanf("1");
     reading_init = false;
     temporal_init = false;
+    id_init = false;
+    SensDataEntry::instances.push_back(this);
 }
 
 SensDataEntry::~SensDataEntry(){
 }
 
 SensDataEntry::SensDataEntry(const SensDataEntry& other){
-    this->temporal_info = other.getTemporalData();
-    this->reading_info = other.getSensData();
-    this->temporal_init = true;
-    this->reading_init = true;
+    if(other.isDataEntrySet()){
+        this->temporal_info = other.getTemporalData();
+        this->reading_info = other.getSensData();
+        this->temporal_init = true;
+        this->reading_init = true;
+        this->id_init = true;
+
+        SensDataEntry::instances.push_back(this);
+    }
 }
 
 // Setters
@@ -22,6 +31,7 @@ bool SensDataEntry::checkAndSetTemporalInfo(int Tval1, int Tval2, int Tval3){
 
     if(this->checkTemporalInfo(Tval1, Tval2, Tval3) && !temporal_init){
         this->temporal_info = {Tval1, Tval2, Tval3};
+        temporal_init = true;
         return true;
     } if(temporal_init){
         std::cout << "temporal info already set, must reset first" << std::endl;
@@ -73,17 +83,21 @@ bool SensDataEntry::checkTemporalInfo(int Tval1, int Tval2, int Tval3){
 }
 
 bool SensDataEntry::setRandomTemporalInfo(){
-    int YYYY = std::trunc(RandomValInBounds(2021,2023.1));
-    int MM = std::trunc(RandomValInBounds(1,12.1));
-    int DD = std::trunc(RandomValInBounds(1,31.1));
+    int YYYY = 0;
+    int MM = 0;
+    int DD = 0;
 
-
+    do{
+        YYYY = std::trunc(RandomValInBounds(2021,2023.1));
+        MM = std::trunc(RandomValInBounds(1,12.1));
+        DD = std::trunc(RandomValInBounds(1,31.1));
+    }while(!checkTemporalInfo(YYYY, MM, DD));
 
     return checkAndSetTemporalInfo(YYYY, MM, DD);
 }
 
 bool SensDataEntry::checkReadingInfo(float Rval){
-    if(trunc(fabs(Rval*100))/100 < 0.0 && trunc(fabs(Rval*100))/100 > 100.0){
+    if(round_down(Rval, 2) < 0.00 || round_down(Rval, 2) > 100.00){
         std::cout << "Reading not in bounds" << std::endl;
         return false;
     }
@@ -91,12 +105,13 @@ bool SensDataEntry::checkReadingInfo(float Rval){
 }
 
 bool SensDataEntry::checkAndSetReadingInfo(float Rval){
-    if(this->checkReadingInfo(Rval) && !reading_init){
+    if(checkReadingInfo(Rval) && !reading_init){
         this->reading_info = Rval;
         this->reading_init = true;
         return true;
-    } if(reading_init){
+    } else if(reading_init){
         std::cout << "reading set, must reset first" << std::endl;
+        return false;
     }
     return false;
 }
@@ -108,21 +123,34 @@ bool SensDataEntry::setRandomReadingInfo(){
 bool SensDataEntry::checkAndSetSensorID(int IDval){
     // no ideal how to check if unique for ever instance ever created
     // maybe with a static list of all instances
-    //if(isnan(this->sensor_id))
+    if(IDval < 0){
+        std::cout << "Sensor ID must be positive" << std::endl;
         return false;
+    }
+    for(SensDataEntry* i : instances){
+        if(i->sensor_id == IDval){
+            std::cout << "Sensor ID not unique" << std::endl;
+            return false;
+        }
+    }
+    sensor_id = IDval;
+    id_init = true;
+    return true;
 }
 
 void SensDataEntry::reset(){
     temporal_info.fill(std::nan("-1"));
     reading_info = std::nanf("1");
+    sensor_id = std::nanf("-1");
     reading_init = false;
     temporal_init = false;
+    id_init = false;
 }
 
 // Getters
 bool SensDataEntry::isDataEntrySet() const {
     // temp only ever set as a whole not seperately -> okay to do this
-    bool res = (!isnan(temporal_info[0]) && !isnan(reading_info)) ? true : false;
+    bool res = (temporal_init && reading_init && id_init) ? true : false;
     return res;
 }
 
@@ -157,11 +185,27 @@ void SensDataEntry::printEntry() const {
         std::cout << "entry not set" << std::endl;
     }
 }
-/*
+
 SensDataEntry& SensDataEntry::operator= (const SensDataEntry& other){
-    return;
+    SensDataEntry tmp(other);
+    swap(tmp);
+    return *this;
 }
-*/
+
+void SensDataEntry::swap(SensDataEntry& tmp){
+    this->temporal_info = tmp.getTemporalData();
+    this->reading_info = tmp.getSensData();
+    this->temporal_init = true;
+    this->reading_init = true;
+    this->id_init = true;
+}
+
+double SensDataEntry::round_down(double value, int decimal_places) {
+    const double multiplier = std::pow(10.0, decimal_places);
+    return std::floor(value * multiplier) / multiplier;
+}
+
+
 float SensDataEntry::RandomValInBounds(float min_val, float max_val){
     min_val *= 100;
     max_val *= 100;
@@ -170,4 +214,5 @@ float SensDataEntry::RandomValInBounds(float min_val, float max_val){
     std::uniform_int_distribution<float> distribution(min_val, max_val);
     return distribution(generator)/100;
 }
+
 

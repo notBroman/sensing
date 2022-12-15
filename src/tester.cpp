@@ -17,7 +17,7 @@ void test_SDE(){
     Tval3 = 12;
     // Report at least one test with input value in the correct range; then at least one test with value outside the range.
     // Insert the appropriate value below:
-    Rval = 12.4;
+    Rval = 67.43;
     // test the input funciton
     test_SDE.checkAndSetTemporalInfo(Tval1, Tval2, Tval3);
     test_SDE.checkAndSetReadingInfo(Rval);
@@ -32,6 +32,10 @@ void test_SDE(){
     // Also check the same information is printed to screen
     cout << " -- Now print to screen --" << endl;
     test_SDE.printEntry();
+    cout << "make a copy with operator= and print it" << endl;
+    SensDataEntry a = test_SDE;
+    a.checkAndSetSensorID(4);
+    a.printEntry();
     cout << " -- ------------------- --" << endl;
     // this checks random entries
     for (int i = 1; i <= 10; i++){

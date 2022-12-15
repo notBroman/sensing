@@ -6,6 +6,7 @@
 #include <array>
 #include <cmath>
 #include <random>
+#include <vector>
 
 class SensDataEntry{
 protected:
@@ -15,8 +16,11 @@ protected:
     float reading_info;
     bool reading_init;
     bool temporal_init;
+    bool id_init;
 
     int sensor_id;
+
+    static std::vector<SensDataEntry*> instances;
 
 
 public:
@@ -45,6 +49,8 @@ public:
     SensDataEntry& operator= (const SensDataEntry& other);
 
     // Utility
+    void swap(SensDataEntry& tmp);
+    static double round_down(double value, int decimal_places);
     static float RandomValInBounds(float min_val, float max_val);
 };
 
