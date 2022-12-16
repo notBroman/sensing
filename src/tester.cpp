@@ -51,7 +51,8 @@ void test_SDE(){
 }
 
 void test_sensor(){
-    static const int TOT_SENSORS = 1;
+    // removed printing statements
+    static const int TOT_SENSORS = 2;
     Sensor test_sensor[TOT_SENSORS];
     Entry result;
     // this line assumes the base class SensDataEntry form Part 1; you may change it to the derived class, if needed.
@@ -69,7 +70,6 @@ void test_sensor(){
         if (check){
             int tot_test = 25;
             for (int i = 0; i < tot_test; i++){
-                cout << "Testing Sensor " << (sensor_i + 1) << ": Measurement simulation # " << i << endl;
                 check = test_sensor[sensor_i].simulateMeasurement(result);
                 if (check){
                 }else{

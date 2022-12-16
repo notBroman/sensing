@@ -7,9 +7,11 @@
 
 class Sensor{
 protected:
+    // unique const id for sensor
     const int sensor_id;
     std::vector<Entry*> measurements;
 
+    // static stuff because how else can a unique const id be forced
     static std::vector<Sensor*> sensors;
     static std::array<float, 3> coeff;
 

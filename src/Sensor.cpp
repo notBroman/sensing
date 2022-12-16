@@ -1,22 +1,28 @@
 #include "Sensor.hpp"
 
+// static members
 std::vector<Sensor*> Sensor::sensors {};
 std::array<float, 3> Sensor::coeff {-0.8, -0.01, 0.8};
 
-Sensor::Sensor() : sensor_id(Sensor::sensors.size()){
+Sensor::Sensor() : sensor_id((Sensor::sensors.size()) + 1){
+    // basic constructor
+    // intialize the constant sensor id based on the number of sensors created
     Sensor::sensors.push_back(this);
     Sensor::sensors.shrink_to_fit();
 }
 
 bool Sensor::setInitialMeasurement(int Tval1, int Tval2, int Tval3, float Rval){
+    // set the initial measurement with given values
     if(measurements.size() == 0){
+        // since I append the measurement to a vector of all measurements by that
+        // sensor I need to allocate mempry dynamically for it
+        // since entries can only be added no need to worry about cleanup
         Entry* tmp = new Entry();
         tmp->checkAndSetTemporalInfo(Tval1,Tval2,Tval3);
         tmp->checkAndSetReadingInfo(Rval);
         tmp->checkAndSetSensorID(this->sensor_id);
 
         measurements.push_back(tmp);
-        tmp->printEntry();
         return true;
     }
     return false;
@@ -24,7 +30,11 @@ bool Sensor::setInitialMeasurement(int Tval1, int Tval2, int Tval3, float Rval){
 }
 
 bool Sensor::simulateMeasurement(Entry& result){
+    // only allow measures to be gnerated if there is already at least existing one measurement
     if(Sensor::sensors.size() > 0){
+        // since I append the measurement to a vector of all measurements by that
+        // sensor I need to allocate mempry dynamically for it
+        // since entries can only be added no need to worry about cleanup
         Entry* tmp = new Entry();
         std::array<int, 3> t_info = nextTemporalInfo();
         float read = nextReadingInfo();
@@ -40,6 +50,7 @@ bool Sensor::simulateMeasurement(Entry& result){
 }
 
 void Sensor::printSensorRecord(){
+    // print stuff in a nice table
     std::cout << "  Temporal  |  Reading  |  Sensor  " << std::endl;
     std::cout << "------------|-----------|----------" << std::endl;
     for(Entry* i : measurements){
@@ -48,6 +59,7 @@ void Sensor::printSensorRecord(){
 }
 
 std::array<int, 3> Sensor::nextTemporalInfo(){
+    // calculate new temporal info for the entry
     Entry* prev = measurements.back();
     std::array<int, 3> t_next, t_prev = prev->getTemporalData();
     int rand = (int)prev->RandomValInBounds(0.00, 100.00);
@@ -67,7 +79,7 @@ std::array<int, 3> Sensor::nextTemporalInfo(){
     }
     this->diff = add;
     t_prev[2] += add;
-    // i realized i don't actually need to check for leap years, but its in here anyway
+    // fix dates after adding dates
     if(t_prev[2] > 30 && (t_prev[1] == 4 || t_prev[1] == 6 || t_prev[1] == 9 || t_prev[1] == 11)){
         t_next[0] = t_prev[0];
         t_next[1] = t_prev[1] + 1;
@@ -87,12 +99,12 @@ std::array<int, 3> Sensor::nextTemporalInfo(){
     } else{
         t_next = t_prev;
     }
-    std::cout << t_next[0] << ":" << t_next[1] << ":" << t_next[2] << std::endl;
     return t_next;
 
 }
 
 float Sensor::nextReadingInfo(){
+    // implement rules for the readings
     int sz = measurements.size();
     if(sz == 1){
         int coeff_choice = (int)measurements.back()->RandomValInBounds(0, 3);
@@ -115,6 +127,7 @@ float Sensor::nextReadingInfo(){
     }
 
     float res = measurements.back()->getSensData() + (this->delta * 0.4 * this->diff);
+    // clamp using ternary operator
     res = (res < 0.00) ? 0.00 : res;
     res = (res > 100.00) ? 100.00 : res;
 
