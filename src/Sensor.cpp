@@ -110,27 +110,22 @@ float Sensor::nextReadingInfo(){
         int coeff_choice = (int)measurements.back()->RandomValInBounds(0, 3);
         this->delta = Sensor::coeff[coeff_choice];
     }
-    else if (sz%4 == 1 && this->delta == Sensor::coeff[0]){
+    else if (sz%4 == 1){
         if(this->decreasing){
-            this->decreasing = !this->decreasing;
+            std::cout << this->delta << std::endl;
         }
-        this->delta = Sensor::coeff[1];
     }
-    else if (sz%4 == 1 && this->delta == Sensor::coeff[1]){
-        this->delta = (this->decreasing) ? Sensor::coeff[0] : Sensor::coeff[2];
-    }
-    else if (sz%4 == 1 && this->delta == Sensor::coeff[2]){
-        if(!this->decreasing){
-            this->decreasing = !this->decreasing;
-        }
-        this->delta = Sensor::coeff[1];
-    }
+    std::cout << "∂: " << this->delta << std::endl;
 
+<<<<<<< HEAD
     float res = measurements.back()->getSensData() + (this->delta * 0.4 * this->diff);
     // clamp using ternary operator
     res = (res < 0.00) ? 0.00 : res;
     res = (res > 100.00) ? 100.00 : res;
 
     return res;
+=======
+    return measurements.back()->getSensData();
+>>>>>>> parent of de97e4f (bug with date validatin fml)
 }
 

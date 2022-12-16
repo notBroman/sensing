@@ -56,14 +56,39 @@ bool SensDataEntry::checkTemporalInfo(int Tval1, int Tval2, int Tval3){
         return false;
     }
     switch(Tval2){
+<<<<<<< HEAD
+=======
+        case 1:
+        case 3:
+        case 5:
+        case 7:
+        case 8:
+        case 10:
+        case 12:
+            if(Tval3 > 31){
+                std::cout << "day invalid" << std::endl;
+                return false;
+            }
+>>>>>>> parent of de97e4f (bug with date validatin fml)
         case 4:
         case 6:
         case 9:
         case 11:
             if(Tval3 > 30){
-                std::cout << "day invalid" << Tval3 << std::endl;
+                std::cout << "day invalid" << std::endl;
                 return false;
             }
+<<<<<<< HEAD
+=======
+        case 2:
+            if(Tval1 % 4 == 0 && Tval3 > 29){
+                std::cout << "day invalid" << std::endl;
+                return false;
+            } else if (Tval3 > 28){
+                std::cout << "day invalid" << std::endl;
+                return false;
+            }
+>>>>>>> parent of de97e4f (bug with date validatin fml)
     }
     return true;
 }
