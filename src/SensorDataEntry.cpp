@@ -55,7 +55,7 @@ bool SensDataEntry::checkTemporalInfo(int Tval1, int Tval2, int Tval3){
         case 10:
         case 12:
             if(Tval3 > 31){
-                std::cout << "day invalid" << std::endl;
+                std::cout << "day invalid" << Tval3 << std::endl;
                 return false;
             }
         case 4:
@@ -63,14 +63,11 @@ bool SensDataEntry::checkTemporalInfo(int Tval1, int Tval2, int Tval3){
         case 9:
         case 11:
             if(Tval3 > 30){
-                std::cout << "day invalid" << std::endl;
+                std::cout << "day invalid" << Tval3 << std::endl;
                 return false;
             }
         case 2:
-            if(Tval1 % 4 == 0 && Tval3 > 29){
-                std::cout << "day invalid" << std::endl;
-                return false;
-            } else if (Tval3 > 28){
+            if (Tval3 > 28){
                 std::cout << "day invalid" << std::endl;
                 return false;
             }

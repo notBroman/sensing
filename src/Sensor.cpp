@@ -87,6 +87,7 @@ std::array<int, 3> Sensor::nextTemporalInfo(){
     } else{
         t_next = t_prev;
     }
+    std::cout << t_next[0] << ":" << t_next[1] << ":" << t_next[2] << std::endl;
     return t_next;
 
 }
@@ -97,13 +98,26 @@ float Sensor::nextReadingInfo(){
         int coeff_choice = (int)measurements.back()->RandomValInBounds(0, 3);
         this->delta = Sensor::coeff[coeff_choice];
     }
-    else if (sz%4 == 1){
+    else if (sz%4 == 1 && this->delta == Sensor::coeff[0]){
         if(this->decreasing){
-            std::cout << this->delta << std::endl;
+            this->decreasing = !this->decreasing;
         }
+        this->delta = Sensor::coeff[1];
     }
-    std::cout << "∂: " << this->delta << std::endl;
+    else if (sz%4 == 1 && this->delta == Sensor::coeff[1]){
+        this->delta = (this->decreasing) ? Sensor::coeff[0] : Sensor::coeff[2];
+    }
+    else if (sz%4 == 1 && this->delta == Sensor::coeff[2]){
+        if(!this->decreasing){
+            this->decreasing = !this->decreasing;
+        }
+        this->delta = Sensor::coeff[1];
+    }
 
-    return measurements.back()->getSensData();
+    float res = measurements.back()->getSensData() + (this->delta * 0.4 * this->diff);
+    res = (res < 0.00) ? 0.00 : res;
+    res = (res > 100.00) ? 100.00 : res;
+
+    return res;
 }
 

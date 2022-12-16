@@ -67,7 +67,7 @@ void test_sensor(){
         cout << " ------ Testing Sensor " << (sensor_i+1) << " ------" << endl;
         check = test_sensor[sensor_i].setInitialMeasurement(Tval1, Tval2, Tval3, Rval);
         if (check){
-            int tot_test = 15;
+            int tot_test = 25;
             for (int i = 0; i < tot_test; i++){
                 cout << "Testing Sensor " << (sensor_i + 1) << ": Measurement simulation # " << i << endl;
                 check = test_sensor[sensor_i].simulateMeasurement(result);
