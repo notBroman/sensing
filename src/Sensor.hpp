@@ -20,9 +20,12 @@ public:
     // getters
     std::array<int, 3> nextTemporalInfo();
     float nextReadingInfo();
+    int diff;
+    float delta;
+    bool decreasing = true;
 
     bool setInitialMeasurement(int Tval1, int Tval2, int Tval3, float Rval);
-    bool simulateMeasurement(SensDataEntry& result);
+    bool simulateMeasurement(Entry& result);
     void printSensorRecord();
 
 };

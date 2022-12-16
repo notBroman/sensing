@@ -41,7 +41,7 @@ public:
     bool getSDE(int& Tval1, int& Tval2, int& Tval3, float& Rval, int& IDval) const;
     float getSensData() const;
     std::array<int, 3> getTemporalData() const;
-    void printEntry() const;
+    virtual void printEntry() const;
 
     // Overloads
     SensDataEntry& operator= (const SensDataEntry& other);

@@ -6,5 +6,5 @@
 class Entry : public SensDataEntry{
 
 public:
-    void printEntry() const;
+    void printEntry() const override;
 };
